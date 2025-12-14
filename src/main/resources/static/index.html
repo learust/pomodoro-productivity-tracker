@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Productivity Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍅 Pomodoro Productivity Tracker</h1>
+            <p>Focus • Work • Achieve</p>
+        </header>
+
+        <main>
+            <!-- Timer Section -->
+            <section class="timer-section">
+                <div class="timer-display">
+                    <div class="session-type" id="sessionType">WORK</div>
+                    <div class="time" id="timeDisplay">25:00</div>
+                </div>
+                
+                <div class="timer-controls">
+                    <button id="startBtn" class="btn btn-primary">Start</button>
+                    <button id="pauseBtn" class="btn btn-secondary">Pause</button>
+                    <button id="stopBtn" class="btn btn-danger">Stop</button>
+                    <button id="completeBtn" class="btn btn-success">Complete</button>
+                    <button id="configBtn" class="btn btn-config">⚙️ Configure</button>
+                </div>
+                
+                <div class="timer-stats">
+                    <div class="stat">
+                        <span class="stat-label">Completed Sessions</span>
+                        <span class="stat-value" id="completedSessions">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Session State</span>
+                        <span class="stat-value" id="sessionState">STOPPED</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Task Management Section -->
+            <section class="task-section">
+                <h2>📋 Daily Tasks</h2>
+                
+                <div class="task-input">
+                    <input type="text" id="taskInput" placeholder="Enter a new task..." maxlength="500">
+                    <select id="taskPriority">
+                        <option value="1">Low Priority</option>
+                        <option value="2">Medium Priority</option>
+                        <option value="3" selected>High Priority</option>
+                        <option value="4">Very High Priority</option>
+                        <option value="5">Critical Priority</option>
+                    </select>
+                    <button id="addTaskBtn" class="btn btn-primary">Add Task</button>
+                </div>
+                
+                <div class="task-filters">
+                    <button class="filter-btn active" data-filter="all">All Tasks</button>
+                    <button class="filter-btn" data-filter="incomplete">Incomplete</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                </div>
+                
+                <div class="task-list" id="taskList">
+                    <!-- Tasks will be dynamically loaded here -->
+                </div>
+                
+                <div class="task-stats">
+                    <span id="taskStatsText">0 tasks today</span>
+                </div>
+            </section>
+
+            <!-- Progress Chart Section -->
+            <section class="progress-section">
+                <h2>📊 Progress Chart</h2>
+                
+                <div class="chart-header">
+                    <h3 id="chartMonth">December 2025</h3>
+                    <div class="chart-legend">
+                        <span class="legend-item">
+                            <span class="legend-color" style="background-color: #ebedf0;"></span>
+                            No work
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color" style="background-color: #9be9a8;"></span>
+                            < 1 hour
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color" style="background-color: #40c463;"></span>
+                            1-3 hours
+                        </span>
+                        <span class="legend-item">
+                            <span class="legend-color" style="background-color: #216e39;"></span>
+                            4+ hours
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-grid" id="chartGrid">
+                        <!-- Chart grid will be dynamically generated -->
+                    </div>
+                </div>
+                
+                <div class="chart-stats">
+                    <div class="stat">
+                        <span class="stat-label">Total Hours This Month</span>
+                        <span class="stat-value" id="monthlyHours">0.0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Total Sessions</span>
+                        <span class="stat-value" id="monthlySessions">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Session History Section -->
+            <section class="history-section">
+                <h2>📈 Today's Sessions</h2>
+                <div class="session-history" id="sessionHistory">
+                    <!-- Session history will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Configuration Modal -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚙️ Timer Configuration</h3>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="config-group">
+                    <label for="workDuration">Work Duration (minutes):</label>
+                    <input type="number" id="workDuration" min="1" max="120" value="25">
+                </div>
+                <div class="config-group">
+                    <label for="shortBreakDuration">Short Break Duration (minutes):</label>
+                    <input type="number" id="shortBreakDuration" min="1" max="60" value="5">
+                </div>
+                <div class="config-group">
+                    <label for="longBreakDuration">Long Break Duration (minutes):</label>
+                    <input type="number" id="longBreakDuration" min="1" max="60" value="15">
+                </div>
+                <div class="modal-actions">
+                    <button id="saveConfig" class="btn btn-primary">Save Settings</button>
+                    <button id="cancelConfig" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="simple-timer.js"></script>
+</body>
+</html>
