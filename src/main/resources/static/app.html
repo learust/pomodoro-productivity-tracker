@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Productivity Tracker</title>
+    <style>
+        /* Inline CSS to avoid caching */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: #007bff;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .timer-display {
+            margin-bottom: 30px;
+        }
+
+        .session-type {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .time {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-config {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-config:hover {
+            background: #138496;
+        }
+
+        .timer-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Task Section */
+        .task-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .task-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .task-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .task-input select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .task-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .task-list {
+            margin-bottom: 20px;
+        }
+
+        .task-stats {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .chart-container {
+            margin: 20px 0;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            margin: 10px 0;
+        }
+
+        .chart-day {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            background-color: #ebedf0;
+        }
+
+        /* History Section */
+        .history-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pomodoro Productivity Tracker</h1>
+            <p>Focus • Work • Achieve</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="home">Home</button>
+            <button class="tab-btn" data-tab="progress">Progress</button>
+        </nav>
+
+        <main>
+            <!-- Home Tab -->
+            <div class="tab-content active" id="home-tab">
+                <!-- Timer Section -->
+                <section class="timer-section">
+                    <div class="timer-display">
+                        <div class="session-type" id="sessionType">WORK</div>
+                        <div class="time" id="timeDisplay">25:00</div>
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <button id="startBtn" class="btn btn-primary">Start</button>
+                        <button id="pauseBtn" class="btn btn-secondary">Pause</button>
+                        <button id="stopBtn" class="btn btn-danger">Stop</button>
+                        <button id="completeBtn" class="btn btn-success">Complete</button>
+                        <button id="configBtn" class="btn btn-config">Configure</button>
+                    </div>
+                    
+                    <div class="timer-stats">
+                        <div class="stat">
+                            <span class="stat-label">Completed Sessions</span>
+                            <span class="stat-value" id="completedSessions">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Session State</span>
+                            <span class="stat-value" id="sessionState">STOPPED</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Task Management Section -->
+                <section class="task-section">
+                    <h2>Daily Tasks</h2>
+                    
+                    <div class="task-input">
+                        <input type="text" id="taskInput" placeholder="Enter a new task..." maxlength="500">
+                        <select id="taskPriority">
+                            <option value="1">Low Priority</option>
+                            <option value="2" selected>Medium Priority</option>
+                            <option value="3">High Priority</option>
+                        </select>
+                        <button id="addTaskBtn" class="btn btn-primary">Add Task</button>
+                    </div>
+                    
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-filter="all">All Tasks</button>
+                        <button class="filter-btn" data-filter="incomplete">Incomplete</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                    </div>
+                    
+                    <div class="task-list" id="taskList">
+                        <!-- Tasks will be dynamically loaded here -->
+                    </div>
+                    
+                    <div class="task-stats">
+                        <span id="taskStatsText">0 tasks today</span>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Progress Tab -->
+            <div class="tab-content" id="progress-tab">
+                <!-- Progress Chart Section -->
+                <section class="progress-section">
+                    <h2>Progress Chart</h2>
+                    
+                    <div class="chart-header">
+                        <h3 id="chartMonth">December 2025</h3>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-grid" id="chartGrid">
+                            <!-- Chart grid will be dynamically generated -->
+                        </div>
+                    </div>
+                    
+                    <div class="chart-stats">
+                        <div class="stat">
+                            <span class="stat-label">Total Hours This Month</span>
+                            <span class="stat-value" id="monthlyHours">0.0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Total Sessions</span>
+                            <span class="stat-value" id="monthlySessions">0</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Session History Section -->
+                <section class="history-section">
+                    <h2>Today's Sessions</h2>
+                    <div class="session-history" id="sessionHistory">
+                        <!-- Session history will be loaded here -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple tab functionality without external dependencies
+        function setupTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.dataset.tab;
+                    
+                    // Remove active class from all tabs and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    btn.classList.add('active');
+                    document.getElementById(targetTab + '-tab').classList.add('active');
+                    
+                    console.log('Switched to tab:', targetTab);
+                });
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('App initialized with tab functionality');
+            setupTabs();
+            
+            // Add some test content to verify it's working
+            document.getElementById('taskList').innerHTML = '<p>Task management functionality will be connected to backend...</p>';
+            document.getElementById('sessionHistory').innerHTML = '<p>Session history will be loaded from backend...</p>';
+            document.getElementById('chartGrid').innerHTML = '<p>Progress chart will be generated from backend data...</p>';
+        });
+    </script>
+</body>
+</html>
