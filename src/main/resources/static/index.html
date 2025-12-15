@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Productivity Tracker</title>
     <style>
+        /**
+         * Pomodoro Productivity Tracker Styles
+         * Comprehensive CSS for timer, tasks, and productivity features
+         * Includes responsive design and break mode visual feedback
+         */
+         
         * {
             margin: 0;
             padding: 0;
@@ -17,6 +23,11 @@
             color: #333;
             line-height: 1.6;
             min-height: 100vh;
+            transition: background-color 0.5s ease;
+        }
+
+        body.break-mode {
+            background-color: #e3f2fd;
         }
 
         .container {
@@ -586,6 +597,11 @@
     </div>
 
     <script>
+        /**
+         * Pomodoro Timer Application
+         * A comprehensive productivity tracker with timer, task management, and session tracking
+         */
+        
         // Timer functionality
         let timerState = {
             workMinutes: 25,
@@ -603,6 +619,10 @@
             monthlyStats: { hours: 0, sessions: 0 }
         };
 
+        /**
+         * Updates the timer display with current remaining time
+         * Formats time as MM:SS and updates the display element
+         */
         function updateTimerDisplay() {
             const minutes = Math.floor(timerState.remainingSeconds / 60);
             const seconds = timerState.remainingSeconds % 60;
@@ -610,30 +630,46 @@
             document.getElementById('timeDisplay').textContent = display;
         }
 
+        /**
+         * Switches timer to work mode
+         * Resets timer to work duration and updates UI
+         */
         function switchToWork() {
-            if (!timerState.isRunning) {
-                timerState.currentMode = 'work';
-                timerState.remainingSeconds = timerState.workMinutes * 60;
-                updateTimerDisplay();
-                updateModeButtons();
-            }
+            timerState.currentMode = 'work';
+            timerState.remainingSeconds = timerState.workMinutes * 60;
+            updateTimerDisplay();
+            updateModeButtons();
         }
 
+        /**
+         * Switches timer to break mode
+         * Resets timer to break duration and updates UI with light blue background
+         */
         function switchToBreak() {
-            if (!timerState.isRunning) {
-                timerState.currentMode = 'break';
-                timerState.remainingSeconds = timerState.breakMinutes * 60;
-                updateTimerDisplay();
-                updateModeButtons();
-            }
+            timerState.currentMode = 'break';
+            timerState.remainingSeconds = timerState.breakMinutes * 60;
+            updateTimerDisplay();
+            updateModeButtons();
         }
 
+        /**
+         * Updates mode buttons and background color based on current timer mode
+         * Applies active class to current mode button and changes background color
+         */
         function updateModeButtons() {
             const workBtn = document.getElementById('workBtn');
             const breakBtn = document.getElementById('breakBtn');
+            const body = document.body;
             
             workBtn.classList.toggle('active', timerState.currentMode === 'work');
             breakBtn.classList.toggle('active', timerState.currentMode === 'break');
+            
+            // Update background color based on mode
+            if (timerState.currentMode === 'break') {
+                body.classList.add('break-mode');
+            } else {
+                body.classList.remove('break-mode');
+            }
         }
 
         function updateSessionDisplay() {
@@ -672,6 +708,10 @@
             updateSessionDisplay();
         }
 
+        /**
+         * Starts the timer if not already running
+         * Creates 1-second interval to countdown and handle timer completion
+         */
         function startTimer() {
             if (!timerState.isRunning && timerState.remainingSeconds > 0) {
                 timerState.isRunning = true;
@@ -695,6 +735,10 @@
             }
         }
 
+        /**
+         * Pauses the timer and clears the interval
+         * Updates session state to PAUSED
+         */
         function pauseTimer() {
             if (timerState.isRunning) {
                 timerState.isRunning = false;
@@ -785,6 +829,10 @@
                 `${tasks.length} tasks today (${completedCount} completed)`;
         }
 
+        /**
+         * Adds a new task to the task list
+         * Creates task with text, priority, and completion status
+         */
         function addTask() {
             const input = document.getElementById('taskInput');
             const priority = parseInt(document.getElementById('taskPriority').value);
@@ -804,6 +852,10 @@
             }
         }
 
+        /**
+         * Toggles the completion status of a task
+         * @param {number} taskId - The ID of the task to toggle
+         */
         function toggleTask(taskId) {
             const task = tasks.find(t => t.id === taskId);
             if (task) {
